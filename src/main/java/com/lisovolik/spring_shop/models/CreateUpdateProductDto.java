@@ -7,7 +7,8 @@ import lombok.Data;
  */
 
 @Data
-public class PhoneDto {
-    private Long id;
-    private String number;
+public class CreateUpdateProductDto {
+    private String name;
+    private String description;
+    private Long groupId;
 }

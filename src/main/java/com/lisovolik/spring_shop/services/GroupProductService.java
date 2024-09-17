@@ -1,15 +1,14 @@
-package com.lisovolik.spring_shop.admin;
+package com.lisovolik.spring_shop.services;
 
-import com.lisovolik.spring_shop.entity.product.GroupProduct;
+import com.lisovolik.spring_shop.entity.GroupProduct;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.GroupProductNotFoundException;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
-import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
 import com.lisovolik.spring_shop.models.CreateGroupProductDto;
+import com.lisovolik.spring_shop.repositories.GroupProductRepository;
 import com.lisovolik.spring_shop.validators.GroupProductValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

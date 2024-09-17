@@ -1,6 +1,5 @@
 package com.lisovolik.spring_shop.controllers.registration;
 
-import com.lisovolik.spring_shop.entity.user.CustomUser;
 import com.lisovolik.spring_shop.models.CreateUserRequestDto;
 import com.lisovolik.spring_shop.models.CreateUserResponseDto;
 import com.lisovolik.spring_shop.services.UserRegistrationService;

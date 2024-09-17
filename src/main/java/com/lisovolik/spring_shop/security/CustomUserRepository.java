@@ -1,6 +1,6 @@
 package com.lisovolik.spring_shop.security;
 
-import com.lisovolik.spring_shop.entity.user.CustomUser;
+import com.lisovolik.spring_shop.entity.CustomUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

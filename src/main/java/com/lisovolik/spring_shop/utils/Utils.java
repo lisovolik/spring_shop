@@ -1,5 +1,6 @@
 package com.lisovolik.spring_shop.utils;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,5 +16,15 @@ public class Utils {
         return new Date().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+    }
+
+    public static String getExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+
+        if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
+            return "";
+        } else {
+            return fileName.substring(dotIndex + 1);
+        }
     }
 }

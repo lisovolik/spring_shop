@@ -1,5 +1,7 @@
-package com.lisovolik.spring_shop.entity.user;
+package com.lisovolik.spring_shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,6 +25,7 @@ public class CustomUser {
     private String username;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "email")

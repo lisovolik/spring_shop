@@ -1,6 +1,5 @@
-package com.lisovolik.spring_shop.entity.picture;
+package com.lisovolik.spring_shop.entity;
 
-import com.lisovolik.spring_shop.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,5 +26,5 @@ public class ProductPicture {
     private Integer order;
 
     @Column(name="id_product")
-    private Integer idProduct;
+    private Long idProduct;
 }

@@ -12,7 +12,8 @@ public enum ErrorMessages {
     EMAIL_CANT_BE_EMPTY("Email can't be empty."),
     USER_WITH_EMAIL_REGISTERED("User with this email already registered."),
 
-    GROUP_PRODUCT_NOT_FOUND("Group product not found.");
+    GROUP_PRODUCT_NOT_FOUND("Group product not found."),
+    PRODUCT_NOT_FOUND("Product not found.");
 
 
     private final String message;

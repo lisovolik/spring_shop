@@ -7,7 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class PhoneDto {
-    private Long id;
-    private String number;
+public class AddProductToCartDto {
+    private Long productId;
+    private Integer quantity;
 }

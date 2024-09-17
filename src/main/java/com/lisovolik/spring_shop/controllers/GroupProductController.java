@@ -1,11 +1,11 @@
-package com.lisovolik.spring_shop.admin;
+package com.lisovolik.spring_shop.controllers;
 
-import com.lisovolik.spring_shop.entity.product.GroupProduct;
-import com.lisovolik.spring_shop.entity.user.CustomUser;
+import com.lisovolik.spring_shop.entity.GroupProduct;
 import com.lisovolik.spring_shop.models.CreateGroupProductDto;
-import com.lisovolik.spring_shop.services.UserLoginService;
+import com.lisovolik.spring_shop.services.GroupProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/groups")
+
 public class GroupProductController {
     private final GroupProductService groupProductService;
 
@@ -26,17 +27,20 @@ public class GroupProductController {
     }
 
     @PutMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GroupProduct> update(@RequestBody GroupProduct group){
         return groupProductService.update(group);
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GroupProduct> create(@RequestBody CreateGroupProductDto group){
         return groupProductService.create(group);
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> create(@PathVariable Long id){
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id){
         return groupProductService.delete(id);
     }
 }

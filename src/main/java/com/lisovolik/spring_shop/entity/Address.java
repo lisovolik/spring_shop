@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.entity.user;
+package com.lisovolik.spring_shop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,16 +8,25 @@ import lombok.Data;
  */
 
 @Entity
-@Table(name = "phone")
+@Table(name = "address")
 @Data
-public class Phone {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "street")
+    private String street;
+
     @Column(name = "number")
     private String number;
+
+    @Column(name = "flat")
+    private String flat;
 
     @Column(name = "user_id")
     private Long userId;

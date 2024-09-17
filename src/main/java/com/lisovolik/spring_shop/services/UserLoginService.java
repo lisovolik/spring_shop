@@ -1,6 +1,6 @@
 package com.lisovolik.spring_shop.services;
 
-import com.lisovolik.spring_shop.entity.user.CustomUser;
+import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

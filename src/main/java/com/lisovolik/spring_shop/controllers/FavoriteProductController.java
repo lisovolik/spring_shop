@@ -1,20 +1,12 @@
-package com.lisovolik.spring_shop.controllers.favorites;
+package com.lisovolik.spring_shop.controllers;
 
-import com.lisovolik.spring_shop.admin.GroupProductService;
-import com.lisovolik.spring_shop.entity.FavoriteProduct;
-import com.lisovolik.spring_shop.entity.product.GroupProduct;
-import com.lisovolik.spring_shop.entity.product.Product;
-import com.lisovolik.spring_shop.models.CreateGroupProductDto;
+import com.lisovolik.spring_shop.entity.Product;
+import com.lisovolik.spring_shop.services.FavoriteProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +23,13 @@ public class FavoriteProductController {
     public ResponseEntity<List<Product>> getAllFavoriteProducts(Authentication authentication){
         System.out.println(authentication.getPrincipal().toString());
         //return ResponseEntity.ok(Collections.emptyList());
-        return service.getAll(authentication.getPrincipal().toString());
+        return service.getAllFavorites(authentication.getPrincipal().toString());
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> setIsProducts(@PathVariable Long id, Authentication authentication){
+        System.out.println(authentication.getPrincipal().toString());
+        return service.setIsFavorite(id, authentication.getPrincipal().toString());
     }
 
 

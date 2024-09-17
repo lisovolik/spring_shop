@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.entity.product;
+package com.lisovolik.spring_shop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

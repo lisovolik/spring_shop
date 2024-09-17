@@ -1,7 +1,5 @@
-package com.lisovolik.spring_shop.entity.product;
+package com.lisovolik.spring_shop.entity;
 
-import com.lisovolik.spring_shop.entity.picture.ProductPicture;
-import com.lisovolik.spring_shop.entity.user.Address;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,7 +25,7 @@ public class Product {
     @Column(name = "description", length = 4000)
     private String description;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_group")
     private GroupProduct groupProduct;
 

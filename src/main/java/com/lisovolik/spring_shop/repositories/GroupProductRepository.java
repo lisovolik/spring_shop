@@ -1,6 +1,6 @@
-package com.lisovolik.spring_shop.admin;
+package com.lisovolik.spring_shop.repositories;
 
-import com.lisovolik.spring_shop.entity.product.GroupProduct;
+import com.lisovolik.spring_shop.entity.GroupProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

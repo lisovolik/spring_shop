@@ -4,6 +4,7 @@ import com.lisovolik.spring_shop.security.jwt.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.AbstractConfiguredSecurityBuilder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -44,11 +45,16 @@ public class SecurityConfiguration {
                     csrf.disable();
                 })
                 .authorizeHttpRequests(authorize ->{
+                    //authorize.requestMatchers(HttpMethod.POST,"/product").hasRole("ADMIN");
+                    //authorize.requestMatchers(HttpMethod.PUT,"/product").hasRole("ADMIN");
+                    //authorize.requestMatchers(HttpMethod.DELETE,"/product").hasRole("ADMIN");
+                    authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll();
                     authorize.requestMatchers("/register/hello").permitAll();
                     authorize.requestMatchers("/login").permitAll();
                     authorize.requestMatchers("/register").permitAll();
-                   // authorize.anyRequest().authenticated();
-                    authorize.anyRequest().permitAll();
+
+                    authorize.anyRequest().authenticated();
+                   // authorize.anyRequest().permitAll();
                 })
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

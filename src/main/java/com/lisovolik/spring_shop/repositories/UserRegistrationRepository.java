@@ -1,6 +1,6 @@
 package com.lisovolik.spring_shop.repositories;
 
-import com.lisovolik.spring_shop.entity.user.CustomUser;
+import com.lisovolik.spring_shop.entity.CustomUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
