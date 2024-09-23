@@ -2,8 +2,12 @@ package com.lisovolik.spring_shop.controllers;
 
 import com.lisovolik.spring_shop.entity.Product;
 import com.lisovolik.spring_shop.models.CreateUpdateProductDto;
+import com.lisovolik.spring_shop.models.ServerResponseForList;
 import com.lisovolik.spring_shop.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +24,11 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
-        return productService.getAllProducts();
+    public ResponseEntity<ServerResponseForList<Product>> getAllProducts(
+            @RequestParam(name = "limit", defaultValue = "10") int limit,
+            @RequestParam(name = "offset", defaultValue = "0") int offset
+    ){
+        return productService.getAllProducts(limit, offset);
     }
 
     @GetMapping("/{id}")

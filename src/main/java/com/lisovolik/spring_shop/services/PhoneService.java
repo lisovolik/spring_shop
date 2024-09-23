@@ -3,6 +3,8 @@ package com.lisovolik.spring_shop.services;
 import com.lisovolik.spring_shop.entity.Address;
 import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.entity.Phone;
+import com.lisovolik.spring_shop.exceptions.ErrorMessages;
+import com.lisovolik.spring_shop.exceptions.NotFoundException;
 import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
 import com.lisovolik.spring_shop.models.AddressDto;
 import com.lisovolik.spring_shop.models.PhoneDto;
@@ -74,5 +76,14 @@ public class PhoneService {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("Deleted");
+    }
+
+    public String findPhoneById(Long id){
+        Optional<Phone> optional = phoneRepository.findById(id);
+        if (optional.isPresent()){
+            return optional.get().getNumber();
+        } else {
+            throw new NotFoundException(ErrorMessages.PHONE_NOT_FOUND.getMessage());
+        }
     }
 }

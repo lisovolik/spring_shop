@@ -13,6 +13,8 @@ public enum ErrorMessages {
     USER_WITH_EMAIL_REGISTERED("User with this email already registered."),
 
     GROUP_PRODUCT_NOT_FOUND("Group product not found."),
+    ADDRESS_NOT_FOUND("Address not found."),
+    PHONE_NOT_FOUND("Phone not found."),
     PRODUCT_NOT_FOUND("Product not found.");
 
 

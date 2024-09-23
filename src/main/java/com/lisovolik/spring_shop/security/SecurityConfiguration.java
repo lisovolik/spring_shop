@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                     authorize.requestMatchers("/register").permitAll();
 
                     authorize.anyRequest().authenticated();
-                   // authorize.anyRequest().permitAll();
+                    //authorize.anyRequest().permitAll();
                 })
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

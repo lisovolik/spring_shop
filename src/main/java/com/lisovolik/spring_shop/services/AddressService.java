@@ -4,6 +4,8 @@ import com.lisovolik.spring_shop.entity.Address;
 import com.lisovolik.spring_shop.entity.CartProduct;
 import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.entity.Product;
+import com.lisovolik.spring_shop.exceptions.ErrorMessages;
+import com.lisovolik.spring_shop.exceptions.NotFoundException;
 import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
 import com.lisovolik.spring_shop.models.AddressDto;
 import com.lisovolik.spring_shop.repositories.AddressRepository;
@@ -77,5 +79,18 @@ public class AddressService {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("Deleted");
+    }
+
+    public String findAddressById(Long addressId){
+        Optional<Address> optionalAddress = addressRepository.findById(addressId);
+        if (optionalAddress.isPresent()){
+            Address address = optionalAddress.get();
+            return address.getCity() + " " +
+                    address.getStreet() + " " +
+                    address.getNumber() + " " +
+                    address.getFlat();
+        } else {
+            throw new NotFoundException(ErrorMessages.ADDRESS_NOT_FOUND.getMessage());
+        }
     }
 }

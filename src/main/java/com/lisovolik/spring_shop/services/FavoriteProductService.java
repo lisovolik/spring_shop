@@ -6,11 +6,16 @@ import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
 import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
+import com.lisovolik.spring_shop.models.LimitOffsetPageRequest;
+import com.lisovolik.spring_shop.models.ServerResponseForList;
 import com.lisovolik.spring_shop.repositories.FavoriteProductRepository;
 import com.lisovolik.spring_shop.repositories.ProductRepository;
 import com.lisovolik.spring_shop.security.CustomUserRepository;
 import com.lisovolik.spring_shop.utils.Utils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,19 +32,23 @@ import java.util.Optional;
 public class FavoriteProductService {
     private final FavoriteProductRepository favoriteRepository;
     private final CustomUserRepository userRepository;
+    private final UserProfileService userService;
     private final ProductRepository productRepository;
 
-    public ResponseEntity<List<Product>> getAllFavorites(String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
-        List<Product> list = favoriteRepository
-                .findAllByUserId(userId)
-                .stream().map(FavoriteProduct::getProduct)
-                .toList();
-        return  ResponseEntity.ok(list);
+    public ResponseEntity<ServerResponseForList<Product>> getAllFavorites(Integer limit, Integer offset, String userName){
+        Long userId = userService.getUserId(userName);
+        Integer totalCount = favoriteRepository.getCountForFavoriteList(userId);
+        Pageable pageable = new LimitOffsetPageRequest(offset, limit, Sort.by(Sort.Order.asc("f.created_on")));
+        List<Product> list = favoriteRepository.findAllFavoriteProductsByUserId(userId, pageable);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ServerResponseForList<>(
+                        totalCount,
+                        limit,
+                        offset,
+                        list
+                ));
     }
 
     public ResponseEntity<String> setIsFavorite(Long productId, String userName){

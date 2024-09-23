@@ -25,7 +25,7 @@ public class Product {
     @Column(name = "description", length = 4000)
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_group")
     private GroupProduct groupProduct;
 

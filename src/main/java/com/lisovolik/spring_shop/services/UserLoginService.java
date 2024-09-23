@@ -1,6 +1,7 @@
 package com.lisovolik.spring_shop.services;
 
 import com.lisovolik.spring_shop.entity.CustomUser;
+import com.lisovolik.spring_shop.security.CustomUserRepository;
 import com.lisovolik.spring_shop.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +20,20 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserLoginService {
     private final AuthenticationManager authenticationManager;
+    private final UserProfileService userProfileService;
 
-    public ResponseEntity<String> login(CustomUser user){
+    public ResponseEntity<String> login(CustomUser customUser){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                user.getUsername(),
-                user.getPassword()
+                customUser.getUsername(),
+                customUser.getPassword()
         );
 
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwtToken = JwtUtil.generateToken((User) authentication.getPrincipal());
+        User user = (User) authentication.getPrincipal();
+        String jwtToken = new JwtUtil().generateToken(user);
+        userProfileService.updateLastLogin(user.getUsername());
 
         return ResponseEntity.ok(jwtToken);
     }

@@ -25,6 +25,9 @@ public class ProductPictureController {
     @PostMapping("/product/images/{productId}")
     public ResponseEntity<String> savePicture(@PathVariable Long productId,
                                               @RequestParam("image") MultipartFile file){
+        if (!file.getContentType().contains("image")){
+            return ResponseEntity.badRequest().body("Should contain image");
+        }
         return pictureService.savePicture(PRODUCT_IMAGE_PATH, productId, file);
     }
 

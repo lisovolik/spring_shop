@@ -1,5 +1,7 @@
 package com.lisovolik.spring_shop.services;
 
+import com.lisovolik.spring_shop.models.LimitOffsetPageRequest;
+import com.lisovolik.spring_shop.models.ServerResponseForList;
 import com.lisovolik.spring_shop.repositories.GroupProductRepository;
 import com.lisovolik.spring_shop.entity.GroupProduct;
 import com.lisovolik.spring_shop.entity.Product;
@@ -9,6 +11,9 @@ import com.lisovolik.spring_shop.models.CreateUpdateProductDto;
 import com.lisovolik.spring_shop.repositories.ProductRepository;
 import com.lisovolik.spring_shop.validators.ProductValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +31,20 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final GroupProductRepository groupRepository;
 
-    public ResponseEntity<List<Product>> getAllProducts(){
-        return ResponseEntity.ok(productRepository.findAll());
+    public ResponseEntity<ServerResponseForList<Product>> getAllProducts(int limit, int offset){
+        //return ResponseEntity.ok(productRepository.findAll(pageable));
+        Integer totalCount = (int)productRepository.getCount();
+        Pageable pageable = new LimitOffsetPageRequest(offset, limit, Sort.by(Sort.Order.asc("p.name")));
+        List<Product> list = productRepository.findAllProducts(pageable);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ServerResponseForList<>(
+                        totalCount,
+                        limit,
+                        offset,
+                        list
+                ));
     }
 
     public ResponseEntity<Product> getProductById(Long id){

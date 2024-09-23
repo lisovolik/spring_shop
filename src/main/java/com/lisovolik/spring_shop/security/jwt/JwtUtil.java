@@ -4,8 +4,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -15,15 +20,20 @@ import java.util.*;
  */
 
 public class JwtUtil {
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
-    private static final String PRIVATE_KEY = "MIHcAgEBB0ELjXhT8c7yoFjs5eHFvsNYgTrYuVXSWN1KEJqoU";
+    //@Value("${jwt.token.validity}")
+    private long JWT_TOKEN_VALIDITY = 432000000;
 
-    public static String generateToken(User user){
+    //@Value("${jwt.signing.key}")
+    private String PRIVATE_KEY = "MIHcAgEBB0ELjXhT8c7yoFjs5eHFvsNYgTrYuVXSWN1KEJqoU";
+
+
+    public String generateToken(User user){
         Map<String, Object> claims = new HashMap<>();
         Object[] userRoles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toArray();
         claims.put("Roles",userRoles);
+        //Long validMillis = env.getProperty("jwt.token.validity", Long.class);
         return Jwts.builder()
                 .subject(user.getUsername())
                 .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
@@ -32,26 +42,27 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static Claims getClaims(String token){
+    public Claims getClaims(String token){
         return Jwts
                 .parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(getSigningKey() )
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    public static boolean isTokenValid(String token){
+    public boolean isTokenValid(String token){
         return !isExpired(token);
     }
 
-    private static boolean isExpired(String token) {
+    private boolean isExpired(String token) {
         return getClaims(token)
                 .getExpiration()
                 .before(new Date());
     }
 
-    private static SecretKey getSigningKey() {
+    private SecretKey getSigningKey() {
+        //String privateKey = env.getProperty("jwt.signing.key");
         byte[] keyByte = Decoders.BASE64.decode(PRIVATE_KEY);
         return Keys.hmacShaKeyFor(keyByte);
     }

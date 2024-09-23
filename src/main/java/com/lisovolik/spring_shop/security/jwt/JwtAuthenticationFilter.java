@@ -27,16 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String token = null;
+        JwtUtil jwtUtil = new JwtUtil();
 
         if (authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
         }
 
-        if (token != null && JwtUtil.isTokenValid(token)){
+        if (token != null && jwtUtil.isTokenValid(token)){
             List<GrantedAuthority> authorityList = new ArrayList<>();
-            List<String> list = JwtUtil.getClaims(token).get("Roles", List.class);
+            List<String> list = jwtUtil.getClaims(token).get("Roles", List.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    JwtUtil.getClaims(token).getSubject(),
+                    jwtUtil.getClaims(token).getSubject(),
                     null,
                     list.stream().map(SimpleGrantedAuthority::new).toList()
             );
