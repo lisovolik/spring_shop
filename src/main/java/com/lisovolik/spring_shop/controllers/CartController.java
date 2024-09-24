@@ -2,7 +2,8 @@ package com.lisovolik.spring_shop.controllers;
 
 import com.lisovolik.spring_shop.entity.CartProduct;
 import com.lisovolik.spring_shop.entity.Product;
-import com.lisovolik.spring_shop.models.AddProductToCartDto;
+import com.lisovolik.spring_shop.models.cart.AddProductToCartDto;
+import com.lisovolik.spring_shop.models.cart.CartProductDto;
 import com.lisovolik.spring_shop.services.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,12 @@ public class CartController {
     private final CartService service;
 
     @GetMapping()
-    public ResponseEntity<List<Product>> getAllFavoriteProducts(Authentication authentication){
+    public ResponseEntity<List<CartProductDto>> getAllProductsInCart(Authentication authentication){
         return service.getProducts(authentication.getPrincipal().toString());
     }
 
     @PostMapping()
-    public ResponseEntity<CartProduct> addProductsToCart(@RequestBody AddProductToCartDto product, Authentication authentication){
+    public ResponseEntity<CartProductDto> addProductsToCart(@RequestBody AddProductToCartDto product, Authentication authentication){
         return service.addProductToCart(product, authentication.getPrincipal().toString());
     }
 

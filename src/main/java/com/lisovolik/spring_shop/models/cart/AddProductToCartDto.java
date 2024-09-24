@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.models;
+package com.lisovolik.spring_shop.models.cart;
 
 import lombok.Data;
 

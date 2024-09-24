@@ -3,8 +3,9 @@ package com.lisovolik.spring_shop.services;
 import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotValidException;
-import com.lisovolik.spring_shop.models.CreateUserRequestDto;
-import com.lisovolik.spring_shop.models.CreateUserResponseDto;
+import com.lisovolik.spring_shop.mapper.UserMapper;
+import com.lisovolik.spring_shop.models.dto.user.CreateUserRequestDto;
+import com.lisovolik.spring_shop.models.dto.user.UserResponseDto;
 import com.lisovolik.spring_shop.repositories.UserRegistrationRepository;
 import com.lisovolik.spring_shop.utils.Utils;
 import com.lisovolik.spring_shop.validators.UserValidator;
@@ -25,8 +26,9 @@ import java.util.Optional;
 public class UserRegistrationService {
     private final UserRegistrationRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public ResponseEntity<CreateUserResponseDto> registerUser(CreateUserRequestDto userDto){
+    public ResponseEntity<UserResponseDto> registerUser(CreateUserRequestDto userDto){
         //verify user
         UserValidator.validate(userDto);
 
@@ -45,13 +47,7 @@ public class UserRegistrationService {
         user.setLastLogin(Utils.getLocalDateTime());
         CustomUser customUser = repository.save(user);
 
-        CreateUserResponseDto response = new CreateUserResponseDto();
-        response.setId(customUser.getId());
-        response.setUsername(customUser.getUsername());
-        response.setEmail(customUser.getEmail());
-        response.setRole("USER");
-        response.setCreated_on(customUser.getCreated_on());
-        response.setLast_login(customUser.getLastLogin());
+        UserResponseDto response = userMapper.toUserResponse(customUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

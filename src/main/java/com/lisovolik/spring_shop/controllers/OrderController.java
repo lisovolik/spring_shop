@@ -1,7 +1,8 @@
 package com.lisovolik.spring_shop.controllers;
 
 import com.lisovolik.spring_shop.entity.Order;
-import com.lisovolik.spring_shop.models.UserDataForOrderDto;
+import com.lisovolik.spring_shop.models.dto.order.OrderDto;
+import com.lisovolik.spring_shop.models.dto.order.UserDataForOrderDto;
 import com.lisovolik.spring_shop.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +22,19 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> createOrder(
+    public ResponseEntity<OrderDto> createOrder(
             @RequestBody UserDataForOrderDto userData,
             Authentication authentication){
         return orderService.createOrder(userData, authentication.getPrincipal().toString());
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> findAllOrders(Authentication authentication){
+    public ResponseEntity<List<OrderDto>> findAllOrders(Authentication authentication){
         return orderService.findAll(authentication.getPrincipal().toString());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id, Authentication authentication){
+        return orderService.delete(id, authentication.getPrincipal().toString());
     }
 }

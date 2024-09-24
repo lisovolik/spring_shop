@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.models;
+package com.lisovolik.spring_shop.models.dto.phone;
 
 import lombok.Data;
 
@@ -7,7 +7,6 @@ import lombok.Data;
  */
 
 @Data
-public class PhoneDto {
-    private Long id;
+public class CreatePhoneDto {
     private String number;
 }

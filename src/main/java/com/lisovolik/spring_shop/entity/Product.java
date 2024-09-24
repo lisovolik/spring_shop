@@ -2,6 +2,7 @@ package com.lisovolik.spring_shop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JoinFormula;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,4 +34,12 @@ public class Product {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     List<ProductPicture> pictures = new ArrayList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinFormula(value = "(SELECT p.id FROM product_price p WHERE p.product_id = id ORDER BY p.created_on DESC LIMIT 1)")
+    private ProductPrice price;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

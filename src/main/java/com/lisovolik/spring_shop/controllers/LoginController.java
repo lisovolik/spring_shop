@@ -1,6 +1,6 @@
 package com.lisovolik.spring_shop.controllers;
 
-import com.lisovolik.spring_shop.entity.CustomUser;
+import com.lisovolik.spring_shop.models.dto.user.UserLoginRequestDto;
 import com.lisovolik.spring_shop.services.UserLoginService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class LoginController {
     private final UserLoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody CustomUser user){
+    public ResponseEntity<String> login(@RequestBody UserLoginRequestDto user){
         return loginService.login(user);
     }
 }

@@ -3,7 +3,8 @@ package com.lisovolik.spring_shop.validators;
 import com.lisovolik.spring_shop.entity.GroupProduct;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotValidException;
-import com.lisovolik.spring_shop.models.CreateGroupProductDto;
+import com.lisovolik.spring_shop.models.dto.groups.BaseGroupProductDto;
+import com.lisovolik.spring_shop.models.dto.groups.CreateGroupProductDto;
 import io.micrometer.common.util.StringUtils;
 
 /**
@@ -15,7 +16,7 @@ public class GroupProductValidator {
 
     }
 
-    public static void validate(CreateGroupProductDto group) {
+    public static void validate(BaseGroupProductDto group) {
         validate(group.getName(), group.getDescription());
     }
 

@@ -21,4 +21,7 @@ public class GroupProduct {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }

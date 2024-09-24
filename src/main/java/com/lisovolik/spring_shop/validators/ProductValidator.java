@@ -2,8 +2,7 @@ package com.lisovolik.spring_shop.validators;
 
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotValidException;
-import com.lisovolik.spring_shop.models.CreateUpdateProductDto;
-import com.lisovolik.spring_shop.models.CreateUserRequestDto;
+import com.lisovolik.spring_shop.models.dto.product.BaseProductDto;
 import io.micrometer.common.util.StringUtils;
 
 /**
@@ -15,7 +14,7 @@ public class ProductValidator {
 
     }
 
-    public static void validate(CreateUpdateProductDto product) {
+    public static void validate(BaseProductDto product) {
         if (StringUtils.isEmpty(product.getName())){
             throw new NotValidException(ErrorMessages.NAME_CANT_BE_EMPTY.getMessage());
         }

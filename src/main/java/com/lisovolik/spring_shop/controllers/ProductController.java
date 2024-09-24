@@ -1,17 +1,13 @@
 package com.lisovolik.spring_shop.controllers;
 
-import com.lisovolik.spring_shop.entity.Product;
-import com.lisovolik.spring_shop.models.CreateUpdateProductDto;
 import com.lisovolik.spring_shop.models.ServerResponseForList;
+import com.lisovolik.spring_shop.models.dto.product.CreateProductDto;
+import com.lisovolik.spring_shop.models.dto.product.ProductDto;
+import com.lisovolik.spring_shop.models.dto.product.UpdateProductDto;
 import com.lisovolik.spring_shop.services.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by Alexandr Lisovolik on  13.09.2024
@@ -24,7 +20,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<ServerResponseForList<Product>> getAllProducts(
+    public ResponseEntity<ServerResponseForList<ProductDto>> getAllProducts(
             @RequestParam(name = "limit", defaultValue = "10") int limit,
             @RequestParam(name = "offset", defaultValue = "0") int offset
     ){
@@ -32,17 +28,17 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id){
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id){
         return productService.getProductById(id);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody CreateUpdateProductDto product){
-        return productService.updateProduct(id, product);
+    @PutMapping()
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody UpdateProductDto product){
+        return productService.updateProduct(product);
     }
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@RequestBody CreateUpdateProductDto product){
+    public ResponseEntity<ProductDto> createProduct(@RequestBody CreateProductDto product){
         return productService.createProduct(product);
     }
 

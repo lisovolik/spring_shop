@@ -4,7 +4,9 @@ import com.lisovolik.spring_shop.entity.GroupProduct;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.GroupProductNotFoundException;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
-import com.lisovolik.spring_shop.models.CreateGroupProductDto;
+import com.lisovolik.spring_shop.mapper.GroupProductMapper;
+import com.lisovolik.spring_shop.models.dto.groups.CreateGroupProductDto;
+import com.lisovolik.spring_shop.models.dto.groups.GroupProductDto;
 import com.lisovolik.spring_shop.repositories.GroupProductRepository;
 import com.lisovolik.spring_shop.validators.GroupProductValidator;
 import lombok.AllArgsConstructor;
@@ -23,18 +25,26 @@ import java.util.Optional;
 @AllArgsConstructor
 public class GroupProductService {
     private final GroupProductRepository repository;
+    private final GroupProductMapper groupProductMapper;
 
-    public ResponseEntity<List<GroupProduct>> getAllGroups(){
-        return ResponseEntity.ok(repository.findAll());
+    public ResponseEntity<List<GroupProductDto>> getAllGroups(){
+        List<GroupProductDto> response = groupProductMapper.toGroupResponseList(repository.findAllByDeletedFalse());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
-    public ResponseEntity<GroupProduct> create(CreateGroupProductDto groupDto){
+    public ResponseEntity<GroupProductDto> create(CreateGroupProductDto groupDto){
         GroupProductValidator.validate(groupDto);
 
         GroupProduct group = new GroupProduct();
         group.setName(groupDto.getName());
         group.setDescription(groupDto.getDescription());
-        return ResponseEntity.ok(repository.save(group));
+
+        GroupProductDto response = groupProductMapper.toGroupResponse(repository.save(group));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
     public ResponseEntity<String> delete(Long id){
@@ -42,18 +52,37 @@ public class GroupProductService {
         if (optional.isEmpty()){
             throw new NotFoundException(ErrorMessages.NOT_FOUND.getMessage());
         }
+        GroupProduct groupProduct = optional.get();
+        groupProduct.setDeleted(true);
+        repository.save(groupProduct);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("Deleted");
     }
 
-    public ResponseEntity<GroupProduct> update(GroupProduct group){
+    public ResponseEntity<GroupProductDto> update(GroupProductDto group){
         GroupProductValidator.validate(group);
 
-        Optional<GroupProduct> optional = repository.findById(group.getId());
+        Optional<GroupProduct> optional = repository.findByIdAndDeletedFalse(group.getId());
         if (optional.isEmpty()){
             throw new GroupProductNotFoundException(ErrorMessages.GROUP_PRODUCT_NOT_FOUND.getMessage());
         }
+        GroupProduct saved = optional.get();
+        saved.setName(group.getName());
+        saved.setDescription(group.getDescription());
 
-        return ResponseEntity.ok(repository.save(group));
+        GroupProductDto response = groupProductMapper.toGroupResponse(repository.save(saved));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    public GroupProduct getGroupProduct(Long groupId){
+        Optional<GroupProduct> optional = repository.findByIdAndDeletedFalse(groupId);
+        if (optional.isEmpty()){
+            throw new NotFoundException(ErrorMessages.GROUP_PRODUCT_NOT_FOUND.getMessage());
+        }
+        return optional.get();
     }
 }

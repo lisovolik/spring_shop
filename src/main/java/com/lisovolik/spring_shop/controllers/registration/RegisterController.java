@@ -1,7 +1,7 @@
 package com.lisovolik.spring_shop.controllers.registration;
 
-import com.lisovolik.spring_shop.models.CreateUserRequestDto;
-import com.lisovolik.spring_shop.models.CreateUserResponseDto;
+import com.lisovolik.spring_shop.models.dto.user.CreateUserRequestDto;
+import com.lisovolik.spring_shop.models.dto.user.UserResponseDto;
 import com.lisovolik.spring_shop.services.UserRegistrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class RegisterController {
     private final UserRegistrationService userRegistrationService;
 
     @PostMapping
-    public ResponseEntity<CreateUserResponseDto> register(@RequestBody CreateUserRequestDto user){
+    public ResponseEntity<UserResponseDto> register(@RequestBody CreateUserRequestDto user){
         return userRegistrationService.registerUser(user);
     }
 

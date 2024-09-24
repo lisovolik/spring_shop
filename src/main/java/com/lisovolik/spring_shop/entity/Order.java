@@ -40,5 +40,8 @@ public class Order {
     @Column(length = 1, nullable = false)
     @Convert(converter = OrderStatusConverter.class)
     private OrderStatus status = OrderStatus.NEW;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 }
 

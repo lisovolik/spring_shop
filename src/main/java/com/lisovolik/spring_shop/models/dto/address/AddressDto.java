@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.models;
+package com.lisovolik.spring_shop.models.dto.address;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;

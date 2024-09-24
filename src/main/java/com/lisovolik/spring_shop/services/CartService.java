@@ -2,16 +2,17 @@ package com.lisovolik.spring_shop.services;
 
 import com.lisovolik.spring_shop.entity.CartProduct;
 import com.lisovolik.spring_shop.entity.Product;
-import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
-import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
-import com.lisovolik.spring_shop.models.AddProductToCartDto;
+import com.lisovolik.spring_shop.mapper.CartMapper;
+import com.lisovolik.spring_shop.models.cart.AddProductToCartDto;
+import com.lisovolik.spring_shop.models.cart.CartProductDto;
 import com.lisovolik.spring_shop.repositories.CartRepository;
 import com.lisovolik.spring_shop.repositories.ProductRepository;
 import com.lisovolik.spring_shop.security.CustomUserRepository;
 import com.lisovolik.spring_shop.utils.Utils;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,29 +27,22 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
-    private final CustomUserRepository userRepository;
+    private final CartMapper cartMapper;
     private final ProductRepository productRepository;
+    private final UserProfileService userProfileService;
 
-    public ResponseEntity<List<Product>> getProducts(String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
-        List<Product> list = cartRepository
-                .findAllByUserId(userId)
-                .stream().map(CartProduct::getProduct)
-                .toList();
-        return  ResponseEntity.ok(list);
+    public ResponseEntity<List<CartProductDto>> getProducts(String userName){
+        Long userId = userProfileService.getUserId(userName);
+        List<CartProduct> list = cartRepository.findAllByUserId(userId);
+        List<CartProductDto> response = cartMapper.toCartResponseList(list);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
 
-    public ResponseEntity<CartProduct> addProductToCart(AddProductToCartDto product, String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
+    public ResponseEntity<CartProductDto> addProductToCart(AddProductToCartDto product, String userName){
+        Long userId = userProfileService.getUserId(userName);
 
         Optional<Product> productOptional = productRepository.findById(product.getProductId());
         if (productOptional.isEmpty()){
@@ -66,16 +60,14 @@ public class CartService {
         if (optionalCartProduct.isPresent()){
             productToSave.setId(optionalCartProduct.get().getId());
         }
-        cartRepository.save(productToSave);
-        return  ResponseEntity.ok().body(productToSave);
+        CartProductDto response = cartMapper.toCartResponse(cartRepository.save(productToSave));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
     public ResponseEntity<String> deleteProductFromCart(Long productId, String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
+        Long userId = userProfileService.getUserId(userName);
 
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isEmpty()){

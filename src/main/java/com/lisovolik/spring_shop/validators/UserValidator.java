@@ -2,7 +2,7 @@ package com.lisovolik.spring_shop.validators;
 
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotValidException;
-import com.lisovolik.spring_shop.models.CreateUserRequestDto;
+import com.lisovolik.spring_shop.models.dto.user.CreateUserRequestDto;
 import io.micrometer.common.util.StringUtils;
 
 /**

@@ -1,7 +1,6 @@
 package com.lisovolik.spring_shop.services;
 
-import com.lisovolik.spring_shop.entity.CustomUser;
-import com.lisovolik.spring_shop.security.CustomUserRepository;
+import com.lisovolik.spring_shop.models.dto.user.UserLoginRequestDto;
 import com.lisovolik.spring_shop.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class UserLoginService {
     private final AuthenticationManager authenticationManager;
     private final UserProfileService userProfileService;
 
-    public ResponseEntity<String> login(CustomUser customUser){
+    public ResponseEntity<String> login(UserLoginRequestDto customUser){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 customUser.getUsername(),
                 customUser.getPassword()

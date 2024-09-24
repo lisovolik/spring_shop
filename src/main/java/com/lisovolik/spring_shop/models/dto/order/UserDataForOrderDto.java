@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.models;
+package com.lisovolik.spring_shop.models.dto.order;
 
 import lombok.Data;
 

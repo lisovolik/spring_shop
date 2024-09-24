@@ -2,18 +2,16 @@ package com.lisovolik.spring_shop.services;
 
 import com.lisovolik.spring_shop.entity.FavoriteProduct;
 import com.lisovolik.spring_shop.entity.Product;
-import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
-import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
+import com.lisovolik.spring_shop.mapper.ProductMapper;
 import com.lisovolik.spring_shop.models.LimitOffsetPageRequest;
 import com.lisovolik.spring_shop.models.ServerResponseForList;
+import com.lisovolik.spring_shop.models.dto.product.ProductDto;
 import com.lisovolik.spring_shop.repositories.FavoriteProductRepository;
 import com.lisovolik.spring_shop.repositories.ProductRepository;
-import com.lisovolik.spring_shop.security.CustomUserRepository;
 import com.lisovolik.spring_shop.utils.Utils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -31,28 +29,28 @@ import java.util.Optional;
 @AllArgsConstructor
 public class FavoriteProductService {
     private final FavoriteProductRepository favoriteRepository;
-    private final CustomUserRepository userRepository;
     private final UserProfileService userService;
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    public ResponseEntity<ServerResponseForList<Product>> getAllFavorites(Integer limit, Integer offset, String userName){
+    public ResponseEntity<ServerResponseForList<ProductDto>> getAllFavorites(Integer limit, Integer offset, String userName){
         Long userId = userService.getUserId(userName);
         Integer totalCount = favoriteRepository.getCountForFavoriteList(userId);
         Pageable pageable = new LimitOffsetPageRequest(offset, limit, Sort.by(Sort.Order.asc("f.created_on")));
         List<Product> list = favoriteRepository.findAllFavoriteProductsByUserId(userId, pageable);
-
+        List<ProductDto> response = productMapper.toProductResponseList(list);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ServerResponseForList<>(
                         totalCount,
                         limit,
                         offset,
-                        list
+                        response
                 ));
     }
 
     public ResponseEntity<String> setIsFavorite(Long productId, String userName){
-        Long userId = getUserId(userName);
+        Long userId = userService.getUserId(userName);
         Long favoriteId = checkInFavorites(productId, userId);
 
         if (favoriteId > 0) {
@@ -90,13 +88,4 @@ public class FavoriteProductService {
             return -1L;
         }
     }
-
-    private Long getUserId(String userName) {
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        return userOptional.get().getId();
-    }
-
 }

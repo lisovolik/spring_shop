@@ -1,4 +1,4 @@
-package com.lisovolik.spring_shop.models;
+package com.lisovolik.spring_shop.models.dto.groups;
 
 import lombok.Data;
 
@@ -7,8 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class CreateUpdateProductDto {
+public class BaseGroupProductDto {
     private String name;
     private String description;
-    private Long groupId;
 }

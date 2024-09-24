@@ -1,16 +1,13 @@
 package com.lisovolik.spring_shop.services;
 
-import com.lisovolik.spring_shop.entity.Address;
-import com.lisovolik.spring_shop.entity.CustomUser;
 import com.lisovolik.spring_shop.entity.Phone;
 import com.lisovolik.spring_shop.exceptions.ErrorMessages;
 import com.lisovolik.spring_shop.exceptions.NotFoundException;
-import com.lisovolik.spring_shop.exceptions.UserNotFoundException;
-import com.lisovolik.spring_shop.models.AddressDto;
-import com.lisovolik.spring_shop.models.PhoneDto;
-import com.lisovolik.spring_shop.repositories.AddressRepository;
+import com.lisovolik.spring_shop.mapper.PhoneMapper;
+import com.lisovolik.spring_shop.models.dto.phone.CreatePhoneDto;
+import com.lisovolik.spring_shop.models.dto.phone.EditPhoneDto;
+import com.lisovolik.spring_shop.models.dto.phone.PhoneResponseDto;
 import com.lisovolik.spring_shop.repositories.PhoneRepository;
-import com.lisovolik.spring_shop.security.CustomUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,46 +24,48 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PhoneService {
     private final PhoneRepository phoneRepository;
-    private final CustomUserRepository userRepository;
+    private final PhoneMapper phoneMapper;
+    private final UserProfileService userProfileService;
 
-    public ResponseEntity<List<Phone>> getAll(String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
+    public ResponseEntity<List<PhoneResponseDto>> getAll(String userName){
+        Long userId = userProfileService.getUserId(userName);
+        List<PhoneResponseDto> response = phoneMapper.toPhoneResponseList(phoneRepository.findPhoneByUserId(userId));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(phoneRepository.findPhoneByUserId(userId));
+                .body(response);
     }
 
-    public ResponseEntity<Phone> save(PhoneDto phoneDto, String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        Long userId = userOptional.get().getId();
+    public ResponseEntity<PhoneResponseDto> saveNewPhone(CreatePhoneDto phoneDto, String userName){
+        Long userId = userProfileService.getUserId(userName);
         Phone savePhone = new Phone();
+        savePhone.setNumber(phoneDto.getNumber());
+        savePhone.setUserId(userId);
+        PhoneResponseDto response = phoneMapper.toPhoneResponse(phoneRepository.save(savePhone));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    public ResponseEntity<PhoneResponseDto> editPhone(EditPhoneDto phoneDto, String userName){
+        Long userId = userProfileService.getUserId(userName);
+
 
         if (phoneDto.getId() != null){
-            Optional<Phone> optional = phoneRepository.findById(phoneDto.getId());
-            if (optional.isPresent()){
-                savePhone.setId(optional.get().getId());
-            }
+            throw new NotFoundException(ErrorMessages.PHONE_NOT_FOUND.getMessage());
         }
+        Phone savePhone = new Phone();
+        savePhone.setId(phoneDto.getId());
         savePhone.setNumber(phoneDto.getNumber());
         savePhone.setUserId(userId);
 
+        PhoneResponseDto response = phoneMapper.toPhoneResponse(phoneRepository.save(savePhone));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(phoneRepository.save(savePhone));
+                .body(response);
     }
 
     public ResponseEntity<String> delete(Long id, String userName){
-        Optional<CustomUser> userOptional = userRepository.findByUsername(userName);
-        if (userOptional.isEmpty()){
-            throw new UserNotFoundException();
-        }
+        Long userId = userProfileService.getUserId(userName);
 
         Optional<Phone> optional = phoneRepository.findById(id);
         if (optional.isPresent()){

@@ -1,7 +1,8 @@
 package com.lisovolik.spring_shop.controllers;
 
-import com.lisovolik.spring_shop.entity.Phone;
-import com.lisovolik.spring_shop.models.PhoneDto;
+import com.lisovolik.spring_shop.models.dto.phone.CreatePhoneDto;
+import com.lisovolik.spring_shop.models.dto.phone.EditPhoneDto;
+import com.lisovolik.spring_shop.models.dto.phone.PhoneResponseDto;
 import com.lisovolik.spring_shop.services.PhoneService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,18 @@ public class PhoneController {
     private final PhoneService service;
 
     @GetMapping()
-    public ResponseEntity<List<Phone>> getAll(Authentication authentication){
+    public ResponseEntity<List<PhoneResponseDto>> getAll(Authentication authentication){
         return service.getAll(authentication.getPrincipal().toString());
     }
 
     @PostMapping()
-    public ResponseEntity<Phone> saveAddress(@RequestBody PhoneDto phone, Authentication authentication){
-        return service.save(phone, authentication.getPrincipal().toString());
+    public ResponseEntity<PhoneResponseDto> saveNewPhone(@RequestBody CreatePhoneDto phone, Authentication authentication){
+        return service.saveNewPhone(phone, authentication.getPrincipal().toString());
+    }
+
+    @PutMapping()
+    public ResponseEntity<PhoneResponseDto> editPhone(@RequestBody EditPhoneDto phone, Authentication authentication){
+        return service.editPhone(phone, authentication.getPrincipal().toString());
     }
 
     @DeleteMapping("/{id}")

@@ -15,6 +15,7 @@ public enum ErrorMessages {
     GROUP_PRODUCT_NOT_FOUND("Group product not found."),
     ADDRESS_NOT_FOUND("Address not found."),
     PHONE_NOT_FOUND("Phone not found."),
+    PRICE_NOT_FOUND("Price must be greater than 0.1"),
     PRODUCT_NOT_FOUND("Product not found.");
 
 
